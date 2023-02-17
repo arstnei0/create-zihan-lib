@@ -1,4 +1,4 @@
-import { Options } from "./options"
+import { LibType, Options } from "./options"
 import {
 	text,
 	confirm,
@@ -8,6 +8,7 @@ import {
 	isCancel,
 	cancel,
 	outro,
+	select,
 } from "@clack/prompts"
 import { getPm, installDependenciesCommand, PM } from "../utils/pm"
 import fs from "fs-extra"
@@ -17,14 +18,8 @@ import { modifyPackageJson } from "../utils/packageJson"
 import { exe } from "../utils/exe"
 import colors from "picocolors"
 import { installers, Installers } from "../installers"
-
-const input = <T>(data: symbol | T) => {
-	if (isCancel(data)) {
-		cancel("Cancelled.")
-		process.exit()
-	}
-	return data
-}
+import { input } from "../utils/input"
+import { ComponentId, components, installComponent } from "../component"
 
 export const promptOptions = async () => {
 	const name = input(
@@ -33,6 +28,29 @@ export const promptOptions = async () => {
 			placeholder: "zihan-lib",
 		}),
 	)
+	const type = input(
+		await select({
+			message: "What type of library are you building?",
+			options: [
+				{ value: "normal", label: "Normal library" },
+				{ value: "component", label: "Component library" },
+			],
+		}),
+	) as LibType
+	let component: ComponentId | null = null
+	if (type === "component") {
+		component = input(
+			await select({
+				message: `Which frontend framework are you using?`,
+				options: [
+					...components.map(({ id, name }) => ({
+						value: id,
+						label: name,
+					})),
+				],
+			}),
+		)
+	}
 	const tools = input(
 		await multiselect({
 			message: "Select the tools you want to use.",
@@ -52,21 +70,23 @@ export const promptOptions = async () => {
 	const cwd = process.cwd()
 	const opt: Options = {
 		name,
+		type: type as any,
 		pm: getPm(),
 		dir: join(cwd, name),
 		installers: $installers,
+		component,
 	}
 
 	return opt
 }
 
 export const finish = async (opt: Options) => {
-	const command = installDependenciesCommand(opt.pm)
+	const installDepCommand = installDependenciesCommand(opt.pm)
 	// const command = "pnpm install"
 
 	const ifInstallDependencies = input(
 		await confirm({
-			message: `Do you want to install npm dependencies? (${command})`,
+			message: `Do you want to install npm dependencies? (${installDepCommand})`,
 			initialValue: true,
 			active: "Yes (Recommended)",
 		}),
@@ -76,14 +96,35 @@ export const finish = async (opt: Options) => {
 		installSpinner.start(
 			colors.blue(
 				`Installing dependencies by running "${colors.yellow(
-					command,
+					installDepCommand,
 				)}"`,
 			),
 		)
-		await exe(command, opt.dir, { pipe: false })
+		await exe(installDepCommand, opt.dir, { pipe: false })
 		installSpinner.stop(
 			colors.green(`Dependencies installed successfully!`),
 		)
+	}
+
+	const gitInitCommand = `git init`
+	const ifInitGit = input(
+		await confirm({
+			message: `Do you want to init a new Git repo? (${gitInitCommand})`,
+			initialValue: true,
+			active: "Yes (Recommended)",
+		}),
+	)
+	if (ifInitGit) {
+		const gitSpinner = spinner()
+		gitSpinner.start(
+			colors.blue(
+				`Initiating Git repo by running "${colors.yellow(
+					gitInitCommand,
+				)}"`,
+			),
+		)
+		await exe(gitInitCommand, opt.dir, { pipe: false })
+		gitSpinner.stop(colors.green(`Git repo initiated successfully!`))
 	}
 
 	outro("Thank you for using Create Zihan Lib!")
@@ -121,6 +162,13 @@ export const create = async (opt: Options) => {
 	const copyFilesSpinner = spinner()
 	copyFilesSpinner.start(`Copying files from the base template`)
 	await fs.copy(baseTemplateDir, opt.dir)
+
+	if (opt.type === "normal") {
+		await fs.copy(join(templateDir, "normal-lib"), opt.dir)
+	} else {
+		await fs.copy(join(templateDir, "component-lib"), opt.dir)
+	}
+
 	copyFilesSpinner.stop(colors.green(`Files copied from the base template!`))
 
 	await modifyPackageJson(
@@ -143,6 +191,33 @@ export const create = async (opt: Options) => {
 	// 			{},
 	// 		),
 	// }))
+
+	if (opt.type === "normal") {
+		await modifyPackageJson(join(opt.dir, "package.json"), (pkg) => ({
+			...pkg,
+			exports: {
+				".": {
+					import: "./dist/index.js",
+					require: "./dist/index.js",
+					types: "./dist/index.d.ts",
+				},
+			},
+			scripts: {
+				...pkg.scripts,
+				test: "vitest",
+				coverage: "vitest run --coverage",
+				dev: "vitest --watch",
+			},
+			devDependencies: {
+				...pkg.devDependencies,
+				"vite-plugin-dts": "2.0.0-beta.0",
+				"@types/node": "^18.13.0",
+				vitest: "^0.28.5",
+			},
+		}))
+	} else if (opt.type === "component") {
+		await installComponent(opt)
+	}
 
 	// const targetPkgDir = join(opt.dir, `packages/${opt.name}`)
 	// await fs.move(join(opt.dir, "packages/template"), targetPkgDir)

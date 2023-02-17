@@ -19,6 +19,7 @@ importers:
       picocolors: ^1.0.0
       type-fest: ^3.5.7
       typescript: 5.0.0-beta
+      yaml: ^2.2.1
       zod: ^3.20.6
     dependencies:
       '@clack/core': 0.1.5
@@ -28,6 +29,7 @@ importers:
       fs-extra: 11.1.0
       gradient-string: 2.0.2
       picocolors: 1.0.0
+      yaml: 2.2.1
       zod: 3.20.6
     devDependencies:
       '@types/execa': 2.0.0
@@ -2303,6 +2305,11 @@ packages:
 
   /yallist/4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
+
+  /yaml/2.2.1:
+    resolution: {integrity: sha512-e0WHiYql7+9wr4cWMx3TVQrNwejKaEe7/rHNmQmqRjazfOP5W8PB6Jpebb5o6fIapbz9o9+2ipcaTM2ZwDI6lw==}
+    engines: {node: '>= 14'}
+    dev: false
 
   /yocto-queue/1.0.0:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}

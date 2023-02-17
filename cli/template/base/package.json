@@ -1,28 +1,16 @@
 {
 	"name": "template",
 	"type": "module",
-	"exports": {
-		".": {
-			"import": "./dist/index.js",
-			"require": "./dist/index.js",
-			"types": "./dist/index.d.ts"
-		}
-	},
 	"scripts": {
-		"test": "vitest",
-		"coverage": "vitest run --coverage",
-		"dev": "vitest --watch",
-		"build": "vite build"
+		"build": "vite build",
+		"postinstall": "vite build"
 	},
 	"dependencies": {
-		"@types/node": "^18.13.0",
 		"type-fest": "^3.5.7",
-		"typescript": "^4.9.5",
-		"unplugin-auto-import": "^0.14.3"
+		"typescript": "^4.9.5"
 	},
 	"devDependencies": {
-		"vite": "^4.1.1",
-		"vite-plugin-dts": "2.0.0-beta.0",
-		"vitest": "^0.28.5"
+		"unplugin-auto-import": "^0.14.3",
+		"vite": "^4.1.1"
 	}
 }

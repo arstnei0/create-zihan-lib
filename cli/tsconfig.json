@@ -11,5 +11,6 @@
 		"project/**/*.ts",
 		"index.ts",
 		"utils/**/*.ts"
-	]
+	],
+	"exclude": ["template/**/*.ts"]
 }

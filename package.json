@@ -1,5 +1,6 @@
 {
 	"scripts": {
+		"dev": "cd ./cli && pnpm dev",
 		"test": "cd ../zihan-lib-playground && node ../create-zihan-lib/cli/dist/index.js"
 	}
 }
