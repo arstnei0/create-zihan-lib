@@ -12,7 +12,7 @@ export const prettierInstaller: Installer = {
 			...pkg,
 			scripts: {
 				...pkg.scripts,
-				format: "prettier --write .",
+				format: "prettier --write . --plugin-search-dir .",
 			},
 			devDependencies: {
 				...pkg.devDependencies,

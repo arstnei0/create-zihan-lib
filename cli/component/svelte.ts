@@ -21,6 +21,7 @@ export const svelteInstaller: ComponentInstaller = async (opt: Options) => {
 		devDependencies: {
 			...pkg.devDependencies,
 			"@sveltejs/vite-plugin-svelte": "^2.0.2",
+			"prettier-plugin-svelte": "^2.9.0",
 			...(eslint
 				? {
 						"eslint-plugin-svelte3": "^4.0.0",
