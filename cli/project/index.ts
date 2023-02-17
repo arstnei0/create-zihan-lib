@@ -20,11 +20,12 @@ import colors from "picocolors"
 import { installers, Installers } from "../installers"
 import { input } from "../utils/input"
 import { ComponentId, components, installComponent } from "../component"
+import gradient from "gradient-string"
 
 export const promptOptions = async () => {
 	const name = input(
 		await text({
-			message: "The name of your library",
+			message: "How do you call your library?",
 			placeholder: "zihan-lib",
 		}),
 	)
@@ -53,7 +54,7 @@ export const promptOptions = async () => {
 	}
 	const tools = input(
 		await multiselect({
-			message: "Select the tools you want to use.",
+			message: "Here are some tools available to use.",
 			options: [
 				...Object.entries(installers).map(([id, { name }]) => ({
 					value: id,
@@ -127,7 +128,15 @@ export const finish = async (opt: Options) => {
 		gitSpinner.stop(colors.green(`Git repo initiated successfully!`))
 	}
 
-	outro("Thank you for using Create Zihan Lib!")
+	note(`${colors.green(`Your library ${opt.name} is created successfully!`)}
+${colors.blue(`To start developing, run:`)}
+${colors.cyan(`cd ${opt.name}`)}
+${colors.cyan(`${opt.pm} run dev`)}`)
+	outro(
+		`${gradient(["cyan", "blue", "purple"])(
+			`Thank you for using Create Zihan Lib. Have a good day!`,
+		)}`,
+	)
 }
 
 const install = async (opt: Options) => {
@@ -192,6 +201,11 @@ export const create = async (opt: Options) => {
 	// 		),
 	// }))
 
+	// const targetPkgDir = join(opt.dir, `packages/${opt.name}`)
+	// await fs.move(join(opt.dir, "packages/template"), targetPkgDir)
+
+	await install(opt)
+
 	if (opt.type === "normal") {
 		await modifyPackageJson(join(opt.dir, "package.json"), (pkg) => ({
 			...pkg,
@@ -210,7 +224,6 @@ export const create = async (opt: Options) => {
 			},
 			devDependencies: {
 				...pkg.devDependencies,
-				"vite-plugin-dts": "2.0.0-beta.0",
 				"@types/node": "^18.13.0",
 				vitest: "^0.28.5",
 			},
@@ -218,9 +231,4 @@ export const create = async (opt: Options) => {
 	} else if (opt.type === "component") {
 		await installComponent(opt)
 	}
-
-	// const targetPkgDir = join(opt.dir, `packages/${opt.name}`)
-	// await fs.move(join(opt.dir, "packages/template"), targetPkgDir)
-
-	await install(opt)
 }

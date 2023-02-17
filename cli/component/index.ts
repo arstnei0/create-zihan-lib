@@ -3,7 +3,7 @@ import { solidInstaller } from "./solid"
 import { reactInstaller } from "./react"
 import { spinner } from "@clack/prompts"
 import colors from "picocolors"
-import { replaceFile } from "../utils/replace"
+import { replaceFile } from "../utils/file"
 import { join } from "path"
 import { AUTO_IMPORTS, IMPORTS, PLUGINS } from "./placeholder"
 import { modifyPackageJson } from "../utils/packageJson"
@@ -39,9 +39,19 @@ export const installComponent = async (opt: Options) => {
 
 	await modifyPackageJson(join(opt.dir, "package.json"), (pkg) => ({
 		...pkg,
+		dependencies: {
+			...pkg.dependencies,
+		},
 		scripts: {
 			...pkg.scripts,
 			dev: "vite dev",
+			build: "vite build",
+		},
+		exports: {
+			".": {
+				default: "./dist/index.js",
+				types: "./dist/index.d.ts",
+			},
 		},
 	}))
 }

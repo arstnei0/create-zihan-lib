@@ -4,7 +4,16 @@ import gradient from "gradient-string"
 
 export const greet = async () => {
 	const title = gradient("red", "green", "blue").multiline(
-		textSync("Create Zihan Lib", {})
+		textSync("Create Zihan Lib", {}),
 	)
-	intro(title)
+	console.log(title)
+	intro(
+		`Hi! I am ${gradient(
+			"red",
+			"green",
+			"blue",
+		)(
+			`Create Zihan App`,
+		)}. You want to create a new library? Sure! Let's do it.`,
+	)
 }

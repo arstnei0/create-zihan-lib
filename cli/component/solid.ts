@@ -5,10 +5,12 @@ import { join } from "path"
 import { templateDir } from "../utils/template"
 import { modifyTsconfig } from "../utils/tsconfig"
 import { modifyPackageJson } from "../utils/packageJson"
-import { replaceFile } from "../utils/replace"
+import { replaceFile, rewriteFile } from "../utils/file"
 import { AUTO_IMPORTS, IMPORTS, PLUGINS } from "./placeholder"
+import { yamlParse, yamlStringify } from "../utils/yaml"
 
 export const solidInstaller: ComponentInstaller = async (opt: Options) => {
+	const eslint = opt.installers.includes("eslint")
 	await fs.copy(join(templateDir, "solid"), opt.dir)
 	await modifyTsconfig(join(opt.dir, "tsconfig.json"), (tsc) => ({
 		...tsc,
@@ -23,7 +25,15 @@ export const solidInstaller: ComponentInstaller = async (opt: Options) => {
 		dependencies: {
 			...pkg.dependencies,
 			"solid-js": "^1.6.11",
+		},
+		devDependencies: {
+			...pkg.devDependencies,
 			"vite-plugin-solid": "^2.5.0",
+			...(eslint
+				? {
+						"eslint-plugin-solid": "^0.9.4",
+				  }
+				: {}),
 		},
 	}))
 	replaceFile(join(opt.dir, "index.html"), "__MAIN_FILE__", "main.tsx")
@@ -43,4 +53,13 @@ export const solidInstaller: ComponentInstaller = async (opt: Options) => {
 		PLUGINS,
 		`${PLUGINS}\n		Solid(),`,
 	)
+
+	if (eslint)
+		rewriteFile(join(opt.dir, ".eslintrc.yaml"), async (str) => {
+			const c = yamlParse(str)
+			return yamlStringify({
+				...c,
+				extends: [...c.extends, "plugin:solid/typescript"],
+			})
+		})
 }
