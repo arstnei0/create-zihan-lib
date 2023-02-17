@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"moduleResolution": "Node",
+		"module": "NodeNext",
+		"target": "ESNext",
+		"outDir": "dist",
+		"declaration": true
+	},
+	"include": [
+		"installers/**/*.ts",
+		"project/**/*.ts",
+		"index.ts",
+		"utils/**/*.ts"
+	]
+}

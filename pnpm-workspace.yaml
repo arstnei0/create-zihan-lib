@@ -1,0 +1,3 @@
+packages:
+    - "cli"
+    - "cli/template/base"

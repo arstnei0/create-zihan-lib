@@ -1,0 +1,30 @@
+{
+	"name": "create-zihan-lib",
+	"description": "Create your libraries without pain",
+	"bin": {
+		"create-zihan-lib": "./dist/index.js"
+	},
+	"scripts": {
+		"dev": "tsc --watch",
+		"build": "tsc",
+		"test": "node ./dist/index.js"
+	},
+	"author": "Zihan Chen (zccmczh@gmail.com)",
+	"devDependencies": {
+		"@types/execa": "^2.0.0",
+		"@types/fs-extra": "^11.0.1",
+		"@types/node": "^18.13.0",
+		"type-fest": "^3.5.7",
+		"typescript": "5.0.0-beta"
+	},
+	"dependencies": {
+		"@clack/core": "^0.1.5",
+		"@clack/prompts": "^0.4.0",
+		"commander": "^10.0.0",
+		"figlet": "^1.5.2",
+		"fs-extra": "^11.1.0",
+		"gradient-string": "^2.0.2",
+		"picocolors": "^1.0.0",
+		"zod": "^3.20.6"
+	}
+}
