@@ -1,6 +1,7 @@
 import { Options } from "../project/options"
 import { solidInstaller } from "./solid"
 import { reactInstaller } from "./react"
+import { svelteInstaller } from "./svelte"
 import { spinner } from "@clack/prompts"
 import colors from "picocolors"
 import { replaceFile } from "../utils/file"
@@ -11,8 +12,9 @@ import { modifyPackageJson } from "../utils/packageJson"
 export const components = [
 	{ id: "solid", name: "Solid", install: solidInstaller },
 	{ id: "react", name: "React", install: reactInstaller },
+	{ id: "svelte", name: "Svelte", install: svelteInstaller },
 ] as const
-export type ComponentId = typeof components[number]["id"]
+export type ComponentId = (typeof components)[number]["id"]
 export type ComponentInstaller = (opt: Options) => Promise<void>
 
 export const installComponent = async (opt: Options) => {

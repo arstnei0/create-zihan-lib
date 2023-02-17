@@ -21,6 +21,7 @@ import { installers, Installers } from "../installers"
 import { input } from "../utils/input"
 import { ComponentId, components, installComponent } from "../component"
 import gradient from "gradient-string"
+import { replaceFile } from "../utils/file"
 
 export const promptOptions = async () => {
 	const name = input(
@@ -153,20 +154,44 @@ const install = async (opt: Options) => {
 	}
 }
 
+export const isDirEmpty = async (dir: string) =>
+	(await fs.readdir(dir)).length === 0
+
 export const create = async (opt: Options) => {
 	const exists = await fs.exists(opt.dir)
 
 	if (!exists) {
 		const ifCreateDir = input(
 			await confirm({
-				message: `Directory doesn't exist. Do you want to create a new directory \`${opt.dir}\`?`,
+				message: `Directory doesn't exist. Do you want to create a new directory ${colors.blue(
+					opt.dir,
+				)}?`,
 			}),
 		)
 		if (ifCreateDir) await fs.mkdir(opt.dir)
-		else await cancel(`Directory doesn't exist. Cancelled.`)
+		else {
+			await cancel(`Directory doesn't exist. Cancelled.`)
+			process.exit()
+		}
 	}
 
-	await fs.emptyDir(opt.dir)
+	const dirEmpty = await isDirEmpty(opt.dir)
+	if (!dirEmpty) {
+		const ifEmptyDir = input(
+			await confirm({
+				message: `The directory is not empty. Do you want to empty the directory ${colors.blue(
+					opt.dir,
+				)}? ${colors.red(
+					`Note that all the files in that directory will be deleted!!!`,
+				)}`,
+			}),
+		)
+		if (ifEmptyDir) await fs.emptyDir(opt.dir)
+		else {
+			await cancel(`Directory is not empty. Cancelled.`)
+			process.exit()
+		}
+	}
 
 	const copyFilesSpinner = spinner()
 	copyFilesSpinner.start(`Copying files from the base template`)
@@ -233,4 +258,6 @@ export const create = async (opt: Options) => {
 	} else if (opt.type === "component") {
 		await installComponent(opt)
 	}
+
+	await replaceFile(join(opt.dir, "README.md"), "$$NAME$$", opt.name)
 }

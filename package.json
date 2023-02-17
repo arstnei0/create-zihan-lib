@@ -3,5 +3,8 @@
 		"dev": "cd ./cli && pnpm dev",
 		"build": "cd ./cli && pnpm build",
 		"test": "cd ../zihan-lib-playground && node ../create-zihan-lib/cli/dist/index.js"
+	},
+	"dependencies": {
+		"@changesets/cli": "^2.26.0"
 	}
 }

@@ -1,6 +1,10 @@
 {
 	"name": "create-zihan-lib",
-	"description": "Create your libraries without pain",
+	"description": "Create your libraries without pain.",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/zihan-ch/create-zihan-lib"
+	},
 	"bin": {
 		"create-zihan-lib": "./dist/index.js"
 	},
