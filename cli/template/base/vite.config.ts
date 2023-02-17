@@ -11,7 +11,7 @@ export default defineConfig({
 	},
 	plugins: [
 		AutoImport({
-			dts: "./src/auto-imports.generated.d.ts",
+			dts: "./types/auto-imports.generated.d.ts",
 		}),
 		Dts(),
 	],
