@@ -53,5 +53,7 @@ export const installComponent = async (opt: Options) => {
 				types: "./dist/index.d.ts",
 			},
 		},
+		main: "./dist/index.js",
+		types: "./dist/index.d.ts",
 	}))
 }

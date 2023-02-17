@@ -212,15 +212,17 @@ export const create = async (opt: Options) => {
 			exports: {
 				".": {
 					import: "./dist/index.js",
-					require: "./dist/index.js",
+					require: "./dist/index.cjs",
 					types: "./dist/index.d.ts",
 				},
 			},
+			main: "./dist/index.cjs",
+			types: "./dist/index.d.ts",
 			scripts: {
 				...pkg.scripts,
-				test: "vitest",
+				test: "vitest run",
 				coverage: "vitest run --coverage",
-				dev: "vitest --watch",
+				dev: "vitest dev",
 			},
 			devDependencies: {
 				...pkg.devDependencies,

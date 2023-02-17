@@ -1,9 +1,9 @@
 {
 	"name": "template",
+	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"build": "vite build",
-		"postinstall": "vite build"
+		"build": "vite build"
 	},
 	"dependencies": {
 		"type-fest": "^3.5.7",
@@ -13,5 +13,9 @@
 		"unplugin-auto-import": "^0.14.3",
 		"vite": "^4.1.1",
 		"vite-plugin-dts": "2.0.0-beta.0"
-	}
+	},
+	"files": [
+		"./dist/**/*",
+		"tsconfig.json"
+	]
 }

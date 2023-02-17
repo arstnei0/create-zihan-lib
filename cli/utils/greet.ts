@@ -13,7 +13,7 @@ export const greet = async () => {
 			"green",
 			"blue",
 		)(
-			`Create Zihan App`,
+			`Create Zihan Lib`,
 		)}. You want to create a new library? Sure! Let's do it.`,
 	)
 }
