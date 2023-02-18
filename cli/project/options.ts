@@ -5,6 +5,7 @@ import { Installers } from "../installers"
 export type LibType = "normal" | "component"
 type BaseOptions = {
 	name: string
+	desc?: string
 	pm: PM
 	dir: string
 	installers: Installers

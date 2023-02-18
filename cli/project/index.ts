@@ -41,6 +41,34 @@ export const promptOptions = async () => {
 			],
 		}),
 	) as LibType
+
+	const desc = input(
+		await text({
+			message: `Describe your library! (Optional)`,
+		}),
+	)
+
+	const language = input(
+		await confirm({
+			message: `Which language do you want to use?`,
+			active: "JavaScript",
+			inactive: gradient("red", "cyan", "blue", "yellow")("TypeScript"),
+		}),
+	)
+	if (language) {
+		note(
+			`${colors.inverse(
+				colors.red(`Don't use JavaScript!`),
+			)} ${colors.blue(`Always use TypeScript!`)}`,
+		)
+	} else {
+		note(
+			colors.green(
+				`Nice choice! Never use JavaScript to write libraries. Always use TypeScript!`,
+			),
+		)
+	}
+
 	let component: ComponentId | null = null
 	if (type === "component") {
 		component = input(
@@ -74,6 +102,7 @@ export const promptOptions = async () => {
 	const cwd = process.cwd()
 	const opt: Options = {
 		name,
+		desc,
 		type: type as any,
 		pm: getPm(),
 		dir: join(cwd, name),
@@ -214,6 +243,7 @@ export const create = async (opt: Options) => {
 		(pkg) => ({
 			...pkg,
 			name: opt.name,
+			description: opt.desc,
 		}),
 	)
 	// await modifyPackageJson(join(opt.dir, "package.json"), (pkg) => ({
@@ -263,4 +293,9 @@ export const create = async (opt: Options) => {
 	}
 
 	await replaceFile(join(opt.dir, "README.md"), "$$NAME$$", opt.name)
+	await replaceFile(
+		join(opt.dir, "README.md"),
+		"$$DESC$$",
+		opt.desc ?? "No description.",
+	)
 }
