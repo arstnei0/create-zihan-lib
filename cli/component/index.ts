@@ -2,17 +2,19 @@ import { Options } from "../project/options"
 import { solidInstaller } from "./solid"
 import { reactInstaller } from "./react"
 import { svelteInstaller } from "./svelte"
+import { vueInstaller } from "./vue"
 import { spinner } from "@clack/prompts"
 import colors from "picocolors"
 import { replaceFile } from "../utils/file"
 import { join } from "path"
-import { AUTO_IMPORTS, IMPORTS, PLUGINS } from "./placeholder"
+import { AUTO_IMPORTS, EXTERNAL, IMPORTS, PLUGINS } from "./placeholder"
 import { modifyPackageJson } from "../utils/packageJson"
 
 export const components = [
 	{ id: "solid", name: "Solid", install: solidInstaller },
-	{ id: "react", name: "React", install: reactInstaller },
 	{ id: "svelte", name: "Svelte", install: svelteInstaller },
+	{ id: "react", name: "React", install: reactInstaller },
+	{ id: "vue", name: "Vue", install: vueInstaller },
 ] as const
 export type ComponentId = (typeof components)[number]["id"]
 export type ComponentInstaller = (opt: Options) => Promise<void>
@@ -36,6 +38,7 @@ export const installComponent = async (opt: Options) => {
 	)
 
 	await replaceFile(join(opt.dir, "vite.config.ts"), `${AUTO_IMPORTS}\n`, "")
+	await replaceFile(join(opt.dir, "vite.config.ts"), `${EXTERNAL}\n`, "")
 	await replaceFile(join(opt.dir, "vite.config.ts"), `${IMPORTS}\n`, "")
 	await replaceFile(join(opt.dir, "vite.config.ts"), `${PLUGINS}\n`, "")
 

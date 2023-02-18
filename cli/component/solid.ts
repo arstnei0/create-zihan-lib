@@ -6,7 +6,7 @@ import { templateDir } from "../utils/template"
 import { modifyTsconfig } from "../utils/tsconfig"
 import { modifyPackageJson } from "../utils/packageJson"
 import { replaceFile, rewriteFile } from "../utils/file"
-import { AUTO_IMPORTS, IMPORTS, PLUGINS } from "./placeholder"
+import { AUTO_IMPORTS, EXTERNAL, IMPORTS, PLUGINS } from "./placeholder"
 import { yamlParse, yamlStringify } from "../utils/yaml"
 
 export const solidInstaller: ComponentInstaller = async (opt: Options) => {
@@ -47,6 +47,11 @@ export const solidInstaller: ComponentInstaller = async (opt: Options) => {
 		join(opt.dir, "vite.config.ts"),
 		AUTO_IMPORTS,
 		`${AUTO_IMPORTS}\n				"solid-js",`,
+	)
+	await replaceFile(
+		join(opt.dir, "vite.config.ts"),
+		EXTERNAL,
+		`${EXTERNAL}\n				/^solid-js/ig,`,
 	)
 	await replaceFile(
 		join(opt.dir, "vite.config.ts"),

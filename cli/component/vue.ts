@@ -9,26 +9,25 @@ import { replaceFile, rewriteFile } from "../utils/file"
 import { AUTO_IMPORTS, EXTERNAL, IMPORTS, PLUGINS } from "./placeholder"
 import { yamlParse, yamlStringify } from "../utils/yaml"
 
-export const svelteInstaller: ComponentInstaller = async (opt: Options) => {
+export const vueInstaller: ComponentInstaller = async (opt: Options) => {
 	const eslint = opt.installers.includes("eslint")
-	await fs.copy(join(templateDir, "svelte"), opt.dir)
+	await fs.copy(join(templateDir, "vue"), opt.dir)
 	await modifyPackageJson(join(opt.dir, "package.json"), (pkg) => ({
 		...pkg,
 		scripts: {
 			...pkg.scripts,
-			build: `${pkg.scripts.build} && cp -R ./src/components ./dist/components`,
+			// build: `${pkg.scripts.build} && cp -R ./src/components ./dist/components`,
 		},
 		dependencies: {
 			...pkg.dependencies,
-			svelte: "^3.55.1",
+			vue: "^3.2.47",
 		},
 		devDependencies: {
 			...pkg.devDependencies,
-			"@sveltejs/vite-plugin-svelte": "^2.0.2",
-			"prettier-plugin-svelte": "^2.9.0",
+			"@vitejs/plugin-vue": "^4.0.0",
 			...(eslint
 				? {
-						"eslint-plugin-svelte3": "^4.0.0",
+						"eslint-plugin-vue": "^9.9.0",
 				  }
 				: {}),
 		},
@@ -38,22 +37,22 @@ export const svelteInstaller: ComponentInstaller = async (opt: Options) => {
 	await replaceFile(
 		join(opt.dir, "vite.config.ts"),
 		IMPORTS,
-		`${IMPORTS}\nimport { svelte as Svelte } from "@sveltejs/vite-plugin-svelte"`,
+		`${IMPORTS}\nimport Vue from "@vitejs/plugin-vue"`,
 	)
 	await replaceFile(
 		join(opt.dir, "vite.config.ts"),
 		AUTO_IMPORTS,
-		`${AUTO_IMPORTS}\n				"svelte",`,
+		`${AUTO_IMPORTS}\n				"vue",`,
 	)
 	await replaceFile(
 		join(opt.dir, "vite.config.ts"),
 		EXTERNAL,
-		`${EXTERNAL}\n				/^svelte/ig,`,
+		`${EXTERNAL}\n				/^vue/ig,`,
 	)
 	await replaceFile(
 		join(opt.dir, "vite.config.ts"),
 		PLUGINS,
-		`${PLUGINS}\n		Svelte(),`,
+		`${PLUGINS}\n		Vue(),`,
 	)
 
 	if (eslint)
@@ -61,18 +60,14 @@ export const svelteInstaller: ComponentInstaller = async (opt: Options) => {
 			const c = yamlParse(str)
 			return yamlStringify({
 				...c,
-				extends: [...c.extends],
-				plugins: ["svelte3", ...c.plugins],
-				overrides: [
-					...(c.overrides ?? []),
-					{
-						files: ["*.svelte"],
-						processor: "svelte3/svelte3",
-					},
-				],
-				settings: {
-					...c.settings,
-					"svelte3/typescript": true,
+				extends: [...c.extends, "plugin:vue/vue3-recommended"],
+				parser: "vue-eslint-parser",
+				parserOptions: {
+					parser: "@typescript-eslint/parser",
+				},
+				rules: {
+					...c.rules,
+					"vue/html-indent": "off",
 				},
 			})
 		})

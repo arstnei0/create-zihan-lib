@@ -10,6 +10,12 @@ export default defineConfig({
 			formats: ["es"],
 			fileName: "index",
 		},
+		minify: false,
+		rollupOptions: {
+			external: [
+				// __EXTERNAL__
+			],
+		},
 	},
 	plugins: [
 		AutoImport({

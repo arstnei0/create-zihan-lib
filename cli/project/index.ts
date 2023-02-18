@@ -22,14 +22,16 @@ import { input } from "../utils/input"
 import { ComponentId, components, installComponent } from "../component"
 import gradient from "gradient-string"
 import { replaceFile } from "../utils/file"
+import process from "process"
 
 export const promptOptions = async () => {
-	const name = input(
-		await text({
-			message: "How do you call your library?",
-			placeholder: "zihan-lib",
-		}),
-	)
+	const name =
+		input(
+			await text({
+				message: "How do you call your library?",
+				placeholder: "zihan-lib",
+			}),
+		) ?? `zihan-lib`
 	const type = input(
 		await select({
 			message: "What type of library are you building?",
@@ -196,6 +198,7 @@ export const create = async (opt: Options) => {
 	const copyFilesSpinner = spinner()
 	copyFilesSpinner.start(`Copying files from the base template`)
 	await fs.copy(baseTemplateDir, opt.dir)
+	await fs.rename(join(opt.dir, "_gitignore"), join(opt.dir, ".gitignore"))
 
 	if (opt.type === "normal") {
 		await fs.copy(join(templateDir, "normal-lib"), opt.dir)
