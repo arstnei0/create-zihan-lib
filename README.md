@@ -2,6 +2,8 @@
 
 Create libraries without pain!
 
+![](https://github.com/zihan-ch/create-zihan-lib/raw/main/public/intro.gif)
+
 ## Features
 
 -   Only allows TypeScript
