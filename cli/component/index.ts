@@ -7,7 +7,13 @@ import { spinner } from "@clack/prompts"
 import colors from "picocolors"
 import { replaceFile } from "../utils/file"
 import { join } from "path"
-import { AUTO_IMPORTS, EXTERNAL, IMPORTS, PLUGINS } from "./placeholder"
+import {
+	AUTO_IMPORTS,
+	AUTO_IMPORTS_APPEND,
+	EXTERNAL,
+	IMPORTS,
+	PLUGINS,
+} from "./placeholder"
 import { modifyPackageJson } from "../utils/packageJson"
 
 export const components = [
@@ -38,6 +44,11 @@ export const installComponent = async (opt: Options) => {
 	)
 
 	await replaceFile(join(opt.dir, "vite.config.ts"), `${AUTO_IMPORTS}\n`, "")
+	await replaceFile(
+		join(opt.dir, "vite.config.ts"),
+		`${AUTO_IMPORTS_APPEND}\n`,
+		"",
+	)
 	await replaceFile(join(opt.dir, "vite.config.ts"), `${EXTERNAL}\n`, "")
 	await replaceFile(join(opt.dir, "vite.config.ts"), `${IMPORTS}\n`, "")
 	await replaceFile(join(opt.dir, "vite.config.ts"), `${PLUGINS}\n`, "")

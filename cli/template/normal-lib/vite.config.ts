@@ -13,6 +13,7 @@ export default defineConfig({
 	plugins: [
 		AutoImport({
 			dts: "./src/auto-imports.generated.d.ts",
+			imports: ["vitest"],
 		}),
 		Dts(),
 	],

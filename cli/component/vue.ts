@@ -6,7 +6,13 @@ import { templateDir } from "../utils/template"
 import { modifyTsconfig } from "../utils/tsconfig"
 import { modifyPackageJson } from "../utils/packageJson"
 import { replaceFile, rewriteFile } from "../utils/file"
-import { AUTO_IMPORTS, EXTERNAL, IMPORTS, PLUGINS } from "./placeholder"
+import {
+	AUTO_IMPORTS,
+	AUTO_IMPORTS_APPEND,
+	EXTERNAL,
+	IMPORTS,
+	PLUGINS,
+} from "./placeholder"
 import { yamlParse, yamlStringify } from "../utils/yaml"
 
 export const vueInstaller: ComponentInstaller = async (opt: Options) => {
@@ -46,6 +52,16 @@ export const vueInstaller: ComponentInstaller = async (opt: Options) => {
 	)
 	await replaceFile(
 		join(opt.dir, "vite.config.ts"),
+		AUTO_IMPORTS_APPEND,
+		`${AUTO_IMPORTS_APPEND}
+			vueTemplate: true,
+			eslintrc: {
+				enabled: true,
+				filepath: "./.eslintrc-auto-import.generated.json",
+			},`,
+	)
+	await replaceFile(
+		join(opt.dir, "vite.config.ts"),
 		EXTERNAL,
 		`${EXTERNAL}\n				/^vue/ig,`,
 	)
@@ -60,7 +76,11 @@ export const vueInstaller: ComponentInstaller = async (opt: Options) => {
 			const c = yamlParse(str)
 			return yamlStringify({
 				...c,
-				extends: [...c.extends, "plugin:vue/vue3-recommended"],
+				extends: [
+					...c.extends,
+					"plugin:vue/vue3-recommended",
+					"./.eslintrc-auto-import.generated.json",
+				],
 				parser: "vue-eslint-parser",
 				parserOptions: {
 					parser: "@typescript-eslint/parser",
@@ -68,6 +88,7 @@ export const vueInstaller: ComponentInstaller = async (opt: Options) => {
 				rules: {
 					...c.rules,
 					"vue/html-indent": "off",
+					"vue/multi-word-component-names": "off",
 				},
 			})
 		})

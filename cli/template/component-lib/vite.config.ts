@@ -23,6 +23,9 @@ export default defineConfig({
 			imports: [
 				// __AUTO_IMPORTS__
 			],
+			dirs: ["src/components"],
+			defaultExportByFilename: true,
+			// __AUTO_IMPORT_APPEND__
 		}),
 		Dts(),
 		// __PLUGINS__
