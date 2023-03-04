@@ -16,7 +16,7 @@ Create libraries without pain!
 -   **ESLint** and **Prettier** out of the box and supported by all the frontend frameworks!
 -   **Auto Import** ready to use! (powered by [unplugin-auto-import](https://github.com/antfu/unplugin-auto-import))
 -   DTS generation configured! (powered by [vite-plugin-dts](https://github.com/qmhc/vite-plugin-dts))
--   Amazing CLI experience!
+-   Amazing CLI experience! (powered by [Clack](https://www.clack.cc/))
 
 ## Usage
 
@@ -29,3 +29,5 @@ yarn create zihan-lib
 ```
 
 ## Details
+
+WIP
