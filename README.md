@@ -28,6 +28,7 @@ npm create zihan-lib
 yarn create zihan-lib
 ```
 
-## Details
+## TODOs
 
-WIP
+-  Add details about how to use the templates
+-  Support Civet with [Civetman](https://github.com/zihan-ch/civetman)
